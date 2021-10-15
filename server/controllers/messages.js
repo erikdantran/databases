@@ -1,11 +1,9 @@
 var models = require('../models');
 
+// non-orm version
 module.exports = {
   // a function which handles a get request for all messages
   get: function (req, res) {
-    // invoke model function
-    // send back data retreived
-
     models.messages.getAll( (error, results) => {
       if (error) {
         res.status(400).send(error);
@@ -13,22 +11,45 @@ module.exports = {
         res.status(200).send(JSON.stringify(results));
       }
     });
-
   },
-
 
   // a function which handles posting a message to the database
   post: function (req, res) {
-    // console.log(req.body);
     var data = req.body;
-    console.log(data);
     models.messages.create(data, (error, results) => {
       if (error) {
         res.status(400).send(error);
       } else {
-        // console.log('results from controller', results);
-        res.status(201).end('Message received'); // or send nothing since we dont need anything
+        res.status(201).end('Message received');
       }
     });
   }
 };
+
+// orm version couldnt get it to work
+// module.exports = {
+//   messages: {
+//     get: function(req, res) {
+//       Messages.findAll( { include: Usernames} )
+//         .complete(function(err, results) {
+//           // handle err
+//           res.json(results);
+//         });
+//     },
+
+//     post: function (req, res) {
+//       Usernames.findOrCreate({username: req.body[username]})
+//         .complete(function (err, user) {
+//           var params = {
+//             message: req.body[message],
+//             usernameId: user.id,
+//             roomname: req.body [roomname]
+//           };
+//           Messages.create(params)
+//             .complete(function (err, results) {
+//               res.sendStatus(201);
+//             });
+//         });
+//     }
+//   }
+// };
